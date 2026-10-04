@@ -13,5 +13,6 @@ else
     require("plugins.dap")
     require("plugins.telescope")
     require("plugins.http")
+    require("plugins.alpha")
     require("options")
 end

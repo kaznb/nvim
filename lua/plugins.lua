@@ -29,11 +29,15 @@ require("lazy").setup({
         },
         {
             'nvim-telescope/telescope.nvim',
-            tag = '0.1.8',
+            -- 0.1.8 breaks with nvim-treesitter's main branch (uses removed `nvim-treesitter.configs`)
+            branch = 'master',
             dependencies = { 'nvim-lua/plenary.nvim' }
         },
         {
             'nvim-treesitter/nvim-treesitter',
+            branch = 'main',
+            lazy = false,
+            build = ':TSUpdate',
         },
         {
             'neovim/nvim-lspconfig',
@@ -49,8 +53,19 @@ require("lazy").setup({
         },
         {
             'nvim-tree/nvim-tree.lua',
-            'nvim-tree/nvim-web-devicons'
+            config = function()
+                require("nvim-tree").setup({
+                    -- on_attach = my_on_attach,
+                    view = {
+                        adaptive_size = true,
+                    },
+                    update_focused_file = {
+                        enable = true,
+                    }
+                })
+            end,
         },
+        { 'nvim-tree/nvim-web-devicons' },
         {
             "ray-x/go.nvim",
             dependencies = {
@@ -153,21 +168,21 @@ require("lazy").setup({
             },
             config = function(_, opts) require('litee.calltree').setup(opts) end
         },
-        {
-            "mistweaverco/kulala.nvim",
-            keys = {
-                { "<leader>hs", desc = "Send request" },
-                { "<leader>ha", desc = "Send all requests" },
-                { "<leader>hb", desc = "Open scratchpad" },
-            },
-            ft = { "http", "rest" },
-            opts = {
-                -- your configuration comes here
-                global_keymaps = true,
-                global_keymaps_prefix = "<leader>h",
-                kulala_keymaps_prefix = "",
-            },
-        },
+        -- {
+        --     "mistweaverco/kulala.nvim",
+        --     keys = {
+        --         { "<leader>hs", desc = "Send request" },
+        --         { "<leader>ha", desc = "Send all requests" },
+        --         { "<leader>hb", desc = "Open scratchpad" },
+        --     },
+        --     ft = { "http", "rest" },
+        --     opts = {
+        --         -- your configuration comes here
+        --         global_keymaps = true,
+        --         global_keymaps_prefix = "<leader>h",
+        --         kulala_keymaps_prefix = "",
+        --     },
+        -- },
         { "EdenEast/nightfox.nvim" },
         {
             "folke/flash.nvim",
@@ -214,6 +229,11 @@ require("lazy").setup({
             }
         },
         {
+            "goolord/alpha-nvim",
+            dependencies = { "nvim-tree/nvim-web-devicons" },
+            lazy = false,
+        },
+        {
             'mrcjkb/rustaceanvim',
             -- To avoid being surprised by breaking changes,
             -- I recommend you set a version range
@@ -222,6 +242,56 @@ require("lazy").setup({
             -- No need for lazy.nvim to lazy-load it.
             lazy = false,
         },
+        {
+            "juacker/git-link.nvim",
+            opts = {
+                url_rules = {
+                    {
+                        -- matches remotes like https://host/scm/PROJECT/repo(.git)
+                        pattern = "^https://([^/]+)/scm/([^/]+)/([^/]+)$",
+                        replace = "https://%1/projects/%2/%3",
+                        format_url = function(base_url, params)
+                            base_url = base_url:gsub("%.git$", "")
+                            local ref = params.ref:gsub("/", "%%2F")
+                            local anchor = params.start_line == params.end_line
+                                and tostring(params.start_line)
+                                or string.format("%d-%d", params.start_line, params.end_line)
+                            return string.format(
+                                "%s/browse/%s?at=refs%%2Fheads%%2F%s#%s",
+                                base_url, params.file_path, ref, anchor
+                            )
+                        end,
+                    },
+                },
+            },
+            keys = {
+                {
+                    "<leader>gu",
+                    function() require("git-link.main").copy_line_url() end,
+                    desc = "Copy code link to clipboard",
+                    mode = { "n", "x" },
+                },
+                {
+                    "<leader>go",
+                    function() require("git-link.main").open_line_url() end,
+                    desc = "Open code link in browser",
+                    mode = { "n", "x" },
+                },
+                {
+                    "<leader>gp",
+                    function() require("git-link.main").copy_permalink() end,
+                    desc = "Copy code permalink to clipboard",
+                    mode = { "n", "x" },
+                },
+                {
+                    "<leader>gP",
+                    function() require("git-link.main").open_permalink() end,
+                    desc = "Open code permalink in browser",
+                    mode = { "n", "x" },
+                },
+            },
+        },
+        { 'projekt0n/github-nvim-theme', name = 'github-theme' },
     },
     -- automatically check for plugin updates
     checker = { enabled = true },

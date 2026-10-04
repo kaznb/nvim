@@ -30,13 +30,3 @@ end
 
 vim.keymap.set('n', '<leader>ft', api.tree.toggle, { desc = '[F]ile [T]ree' })
 
--- empty setup using defaults
-require("nvim-tree").setup({
-    on_attach = my_on_attach,
-    view = {
-        adaptive_size = true,
-    },
-    update_focused_file = {
-        enable = true,
-    }
-})
