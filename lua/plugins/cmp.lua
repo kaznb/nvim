@@ -35,7 +35,7 @@ cmp.setup({
     },
     window = {
         completion = cmp.config.window.bordered(),
-        documentation = cmp.config.window.bordered(),
+        documentation = false,
     },
     experimental = {
         native_menu = false,
