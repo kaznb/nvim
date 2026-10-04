@@ -17,6 +17,7 @@ vim.o.showcmd = true
 vim.o.cursorline = true
 vim.o.termguicolors = true
 vim.g.cmp_disabled = true
+vim.lsp.inlay_hint.enable(false)
 
 vim.keymap.set('n', '<Tab>', function() vim.cmd('bn') end, { desc = 'Switch to next buffer' })
 vim.keymap.set('n', '<S-Tab>', function() vim.cmd('bn') end, { desc = 'Switch to previous buffer' })
